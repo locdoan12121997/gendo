@@ -3,7 +3,8 @@
 import os
 from gendo import Gendo
 import requests
-gendo = Gendo("xoxb-243402108406-LIzxxrpI5ftpgQTUJSmX12I0")
+import re
+gendo = Gendo("xoxb-243402108406-A76uco7GUr1alochyQxGzKvQ")
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -18,6 +19,10 @@ coupon_info = req.json()
 def cookies(user, message):
     return 'I *LOVE* COOOOOOOOKIES!!!!'
 
+@gendo.cron('0 9 * * *')
+def cookies(user, message):
+    return 'morning everyonee'
+
 
 @gendo.listen_for('morning')
 def morning(user, message):
@@ -25,28 +30,33 @@ def morning(user, message):
     if message.strip() == 'morning':
         return "mornin' @{user.username}"
 
+@gendo.listen_for('Hey')
 @gendo.listen_for('hey')
 def morning(user, message):
     # make sure message is "morning" and doesn't just contain it.
     if message.strip() == 'hey':
         return "helu @{user.username}"
 
-@gendo.cron('39 12 * * *')
-def morning_greeting():
-    gendo.speak(u"Chào mọi người", "#random")
+# @gendo.cron('* * * * *')
+# def morning_greeting():
+#     gendo.speak(u"Good morning mọi ngườiiiii", "#random")
 
-@gendo.listen_for('test')
-# @gendo.cron('*/1 * * * *')
+@gendo.cron('30 14 * * *')
+@gendo.listen_for('eat')
 def cronjob():
-    gendo.speak("Heyy, new discount yooo:\n","#random")
+    gendo.speak(u"Chào mọi người. Em là Coupon Bot. Nhà em có nhiều coupon.\n", "#testbot")
+    gendo.speak(u"Coupon nè, hihihi:\n","#testbot")
     for i in range(0, 9):
         url = 'https://www.deliverynow.vn/Offer/LoadMore?pageIndex=' + str(i) + '&provinceId=217'
         req = requests.get(url)
         coupon_info = req.json()
 
         for data in coupon_info['data']:
-            if (data['Restaurant']['FullAddress'][-6:] == u"Quận 2") or (
-                        data['Restaurant']['FullAddress'][-15:] == u"Quận Bình Thạnh"):
+            if (data['Restaurant']['FullAddress'][-6:] == u"Quận 4") or (
+                        #data['Restaurant']['FullAddress'][-15:] == u"Quận Bình Thạnh") or (
+                        data['Restaurant']['FullAddress'][-6:] == u"Quận 3") or (
+                        data['Restaurant']['FullAddress'][-6:] == u"Quận 7") or (
+                        data['Restaurant']['FullAddress'][-6:] == u"Quận 1"):
 
                 discount = "Discount: " + data['Title'][4: 8] + "\n"
                 res_name = "Restaurant: " + data['Restaurant']['ResName'] + "\n"
@@ -54,7 +64,7 @@ def cronjob():
                 address = "Address: " + data['Restaurant']['FullAddress'] + "\n"
                 link = "Link: " + 'https://www.deliverynow.vn' + data['DetailUrl']
 
-                gendo.speak( discount  + res_name + code + address + link,"#random")
+                gendo.speak(discount + res_name + code + address + link,"#testbot")
 
 @gendo.listen_for('bot ')
 def morning(user, message):
@@ -63,5 +73,5 @@ def morning(user, message):
         return "helu @{user.username}"
 
 
-# if __name__ == '__main__':
-gendo.run()
+if __name__ == '__main__':
+    gendo.run()
